@@ -17,15 +17,27 @@
     <div class="container-fluid">
         <div class="row">
            <h5 class="mt-1">Search for a City</h5>
-              <div class="input-group mb-3">
+            <div class="input-group mb-3">
                 <input id="enter-city" type="text" class="form-control" placeholder="City Name" aria-label="City Name" aria-describedby="search-button">
                 <div class="input-group-append">
-                    <button class="btn btn-primary" type="button" id="search-button">Search
-                </button>
-
+                    <button class="btn btn-primary" type="button" id="search-button">Search</button>
+                </div>
             </div>
-           </div>
-    </div>
+        </div>
+        <!--Current Weather-->
+        <div class="col-lg-9">
+            <div class="row mr-0">
+                <div class="col-lg-11 card m3 d-none" id="current-weather">
+                    <div class="card-body"></div>
+                        <h3 id="city-name" class="city-name align-middle"></h3>
+                        <img id ="current-weather-pic" alt="">
+                        <p id="temperature"></p>
+                        <p id="humidity"></p>
+                        <p id="wind-speed"></p>
+                        <p id="uv-index"></p>
+                </div>
+            </div>
+        </div>
     
     
     </div>
