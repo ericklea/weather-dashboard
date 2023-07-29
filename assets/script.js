@@ -2,15 +2,19 @@
 function initPage() {
     const cityEl = document.getElementById("enter-city");
     const searchEl = document.getElementById("search-button");
+    const clearEl = document.getElementById("clear-history");
     const nameEl = document.getElementById("city-name");
     const currentPicEl = document.getElementById("current-pic");
     const currentTempEl = document.getElementById("temperature");
     const currentHumidityEl = document.getElementById("humidity");
     const currentWindEl = document.getElementById("wind-speed");
     const currentUVEl = document.getElementById("UV-index");
+    const historyEl = document.getElementById("history");
     var forecastEl = document.getElementById("fiveday");
     var currentEl = document.getElementById("current-weather");
     let searchHistory = JSON.parse(localStorage.getItem("search")) || [];
+    
+
 
     // API Key
     const APIKey = "9f92120b601276767d87f584c5973ce9";
@@ -29,7 +33,7 @@ function getWeather(cityName) {
             const year = currentDate.getFullYear();
             nameEl.innerHTML = response.data.name + " (" + month + "/" + day + "/" + year + ") ";
             let weatherPic = response.data.weather[0].icon;
-            currentPicEl.setAttribute("src", "https://openweathermap.org/img/wn/" + weatherPic + ".png");
+            currentPicEl.setAttribute("src", "https://openweathermap.org/img/wn/" + weatherPic + "@2x.png");
             currentPicEl.setAttribute("alt", response.data.weather[0].description);
             currentTempEl.innerHTML = "Temperature: " + k2f(response.data.main.temp) + " &#176F";
             currentHumidityEl.innerHTML = "Humidity: " + response.data.main.humidity + "%";
@@ -38,16 +42,24 @@ function getWeather(cityName) {
             // Get UV Index
             let lat = response.data.coord.lat;
             let lon = response.data.coord.lon;
-            let UVQueryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + lat + "&lon=" + lon + "&appid=" + APIKey + '&cnt=1"';
+            let UVQueryURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey + '&cnt=1"';
             axios.get(UVQueryURL)
                 .then(function (response) {
                     let UVIndex = document.createElement("span");
+                    if (response.data[0].value < 3) {
+                    UVIndex.setAttribute("class", "badge badge-success");
+                    }
+                    else if (response.data[0].value < 7) {
+                    UVIndex.setAttribute("class", "badge badge-warning");
+                    }
+                    else {
                     UVIndex.setAttribute("class", "badge badge-danger");
+                    }
                     UVIndex.innerHTML = response.data.value;
                     currentUVEl.innerHTML = "UV Index: ";
                     currentUVEl.append(UVIndex);
-                }
-                );
+                });
+
         // Get 5 Day Forecast
         let cityID = response.data.id;
         let forecastQueryURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + cityID + "&appid=" + APIKey;
@@ -78,8 +90,8 @@ function getWeather(cityName) {
                     fivedayEl[i].append(forecastHumidityEl);
                 }
             })
-    });
-}
+        });
+    }
 
 // Local Storage
 searchEl.addEventListener("click", function () {
@@ -88,10 +100,16 @@ searchEl.addEventListener("click", function () {
     searchHistory.push(searchTerm);
     localStorage.setItem("search", JSON.stringify(searchHistory));
     renderSearchHistory();
-})
+    })
+// Clear Search History
+clearEl.addEventListener("click", function () {
+    localStorage.clear();
+    searchHistory = [];
+    renderSearchHistory();
+    })
 function k2f(K) {
     return Math.floor((K - 273.15) * 1.8 + 32);
-}
+    }
 function renderSearchHistory() {
     historyEl.innerHTML = "";
     for (let i = 0; i < searchHistory.length; i++) {
@@ -104,13 +122,12 @@ function renderSearchHistory() {
             getWeather(historyItem.value);
         })
         historyEl.append(historyItem);
+        }
     }
-}
 renderSearchHistory();
 if (searchHistory.length > 0) {
     getWeather(searchHistory[searchHistory.length - 1]);
-}
+    }   
 }
 
-
-initPage();
+initPage()
