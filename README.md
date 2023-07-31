@@ -5,7 +5,7 @@ This is a Weather Dashboard application. This application was built with html, c
 
 #Installation
 To run this application select the following link.
-https://.ericklea.github/weather-dashboard
+https://ericklea.github.io/weather-dashboard/
 
 #Usage
 To use this application, select the link above and input a city name in the search bar. 
